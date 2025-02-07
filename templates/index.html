@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Agricultural Data System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f0fff0; /* Light green background */
+            color: #2e7d32; /* Dark green text */
+        }
+        h2, h3 {
+            color: #1b5e20; /* Deep green headers */
+        }
+        input {
+            padding: 12px;
+            width: 350px;
+            margin-top: 10px;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+        input:focus {
+            border-color: #1b5e20;
+            box-shadow: 0 0 10px #66bb6a;
+        }
+        button {
+            padding: 12px 18px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #4caf50;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #388e3c;
+        }
+        #data-list {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #e8f5e9;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 5px solid #2e7d32;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h2>🌱 Secure Agricultural Data System 🌾</h2>
+
+    <input type="text" id="dataInput" placeholder="Enter Agricultural Data">
+    <button onclick="encryptData()">Encrypt & Store</button>
+
+    <h3>📜 Decrypted Data:</h3>
+    <button onclick="fetchData()">Retrieve Data</button>
+    <ul id="data-list"></ul>
+
+    <script>
+        function encryptData() {
+            let data = document.getElementById("dataInput").value;
+            if (!data) {
+                alert("⚠️ Please enter some data!");
+                return;
+            }
+
+            fetch("/encrypt", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data: data })
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert("✅ " + result.message);
+                document.getElementById("dataInput").value = "";
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function fetchData() {
+            fetch("/decrypt")
+            .then(response => response.json())
+            .then(data => {
+                let list = document.getElementById("data-list");
+                list.innerHTML = "";
+                data.decrypted_data.forEach(item => {
+                    let li = document.createElement("li");
+                    li.textContent = item;
+                    list.appendChild(li);
+                });
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
